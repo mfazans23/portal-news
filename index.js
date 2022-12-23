@@ -5,11 +5,11 @@ const loadingSpinnerDOM = document.querySelector('.loading-spinner')
 document.addEventListener('DOMContentLoaded', async () => {
   displayLoadingSpinner()
 
-  const headlineNews = await fetchNews(
-    'https://newsapi.org/v2/top-headlines?country=id&apiKey=ead2f99074434828bee8a8b8c41df290'
+  const latestNews = await fetchNews(
+    'https://newsdata.io/api/1/news?apikey=pub_14926a099e16eff928dfac3fedd76a02601b2&country=id'
   )
 
-  displayNews(headlineNews)
+  displayNews(latestNews)
 })
 
 searchInput.addEventListener('keyup', async (e) => {
@@ -19,7 +19,7 @@ searchInput.addEventListener('keyup', async (e) => {
     let url
 
     if (e.target.value !== '') {
-      url = `https://newsapi.org/v2/everything?q=${e.target.value}&language=id&sortBy=publishedAt&apiKey=ead2f99074434828bee8a8b8c41df290`
+      url = `https://newsapi.org/v2/everything?q=${e.target.value}&apiKey=ead2f99074434828bee8a8b8c41df290`
     } else {
       url =
         'https://newsapi.org/v2/top-headlines?country=id&apiKey=ead2f99074434828bee8a8b8c41df290'
@@ -32,25 +32,21 @@ searchInput.addEventListener('keyup', async (e) => {
 })
 
 const fetchNews = async (url) => {
-  try {
-    const response = await fetch(url)
-    const data = await response.json()
+  const response = await fetch(url)
+  const data = await response.json()
 
-    return data.articles
-  } catch (error) {
-    return []
-  }
+  console.log(data)
 }
 
 const displayNews = (newsArr) => {
-  if (newsArr.length > 0) {
+  if (newsArr !== undefined) {
     newsWrapperDOM.innerHTML = ''
-
+    console.log(newsArr)
     newsArr.forEach((news) => {
       newsWrapperDOM.innerHTML += `<div class="news-item mb-4">    
-    <a class="news-link" href=${
-      news.url
-    } target="_blank">                            
+                                    <a class="news-link" href=${
+                                      news.url
+                                    } target="_blank">                            
                                         <img class="news-image" src=${
                                           news.urlToImage
                                         } />
@@ -74,11 +70,9 @@ const displayNews = (newsArr) => {
                                     </a>
                                 </div>`
     })
-  } else {
-    newsWrapperDOM.innerHTML =
-      '<h1 class="text-center w-100">Berita Tidak Ditemukan</h1>'
+
+    removeLoadingSpinner()
   }
-  removeLoadingSpinner()
 }
 
 const displayLoadingSpinner = () => {
