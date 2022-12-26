@@ -6,28 +6,30 @@ document.addEventListener('DOMContentLoaded', async () => {
   displayLoadingSpinner()
 
   const headlineNews = await fetchNews(
-    'https://newsapi.org/v2/top-headlines?country=id&apiKey=d35e7e81adbb4b62bb8e4f9eb92109d4'
+    'https://gnews.io/api/v4/top-headlines?token=277b39cdd2ec85119c2fdf052cd777da&lang=en'
   )
 
   displayNews(headlineNews)
 })
 
 searchInput.addEventListener('keyup', async (e) => {
-  displayLoadingSpinner()
+  if (e.keyCode >= 65 && e.keyCode <= 90) {
+    displayLoadingSpinner()
 
-  let searchKeyword = e.target.value.replace(/\s*$/, '')
-  let url
+    let searchKeyword = e.target.value.replace(/\s*$/, '')
+    let url
 
-  if (searchKeyword !== '') {
-    url = `https://newsapi.org/v2/everything?q=${searchKeyword}&language=id&sortBy=publishedAt&apiKey=d35e7e81adbb4b62bb8e4f9eb92109d4`
-  } else {
-    url =
-      'https://newsapi.org/v2/top-headlines?country=id&apiKey=d35e7e81adbb4b62bb8e4f9eb92109d4'
+    if (searchKeyword !== '') {
+      url = `https://gnews.io/api/v4/search?q=${searchKeyword}&token=277b39cdd2ec85119c2fdf052cd777da&lang=en`
+    } else {
+      url =
+        'https://gnews.io/api/v4/top-headlines?token=277b39cdd2ec85119c2fdf052cd777da&lang=en'
+    }
+
+    let searchResult = await fetchNews(url)
+
+    displayNews(searchResult)
   }
-
-  let searchResult = await fetchNews(url)
-
-  displayNews(searchResult)
 })
 
 const fetchNews = async (url) => {
@@ -37,7 +39,7 @@ const fetchNews = async (url) => {
 
     return data.articles
   } catch (error) {
-    return []
+    console.log(error.message)
   }
 }
 
@@ -48,7 +50,7 @@ const displayNews = (newsArr) => {
     newsArr.forEach((news) => {
       newsWrapperDOM.innerHTML += `<div class="news-item mb-4">                              
                                       <img class="news-image" src=${
-                                        news.urlToImage
+                                        news.image
                                       } />
                                       <div class="news-content">
                                         <h2 class="news-title">
@@ -56,7 +58,7 @@ const displayNews = (newsArr) => {
                                         </h2>                                       
                                         <div class="news-meta-info">
                                           <span class="author">${
-                                            news.author
+                                            news.source.name
                                           }</span> -
                                           <span class="publish-time">${news.publishedAt
                                             .replaceAll('-', '/')
