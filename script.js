@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   displayLoadingSpinner()
 
   const headlineNews = await fetchNews(
-    'https://newsapi.org/v2/top-headlines?country=id&apiKey=800b96523eaa4413933c7b21f14845ff'
+    'https://newsapi.org/v2/top-headlines?country=id&apiKey=d35e7e81adbb4b62bb8e4f9eb92109d4'
   )
 
   displayNews(headlineNews)
@@ -15,13 +15,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 searchInput.addEventListener('keyup', async (e) => {
   displayLoadingSpinner()
 
+  let searchKeyword = e.target.value.replace(/\s*$/, '')
   let url
 
-  if (e.target.value !== '') {
-    url = `https://newsapi.org/v2/everything?q="${e.target.value}"&language=id&sortBy=publishedAt&apiKey=800b96523eaa4413933c7b21f14845ff`
+  if (searchKeyword !== '') {
+    url = `https://newsapi.org/v2/everything?q=${searchKeyword}&language=id&sortBy=publishedAt&apiKey=d35e7e81adbb4b62bb8e4f9eb92109d4`
   } else {
     url =
-      'https://newsapi.org/v2/top-headlines?country=id&apiKey=800b96523eaa4413933c7b21f14845ff'
+      'https://newsapi.org/v2/top-headlines?country=id&apiKey=d35e7e81adbb4b62bb8e4f9eb92109d4'
   }
 
   let searchResult = await fetchNews(url)
